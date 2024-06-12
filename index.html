@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>20215485-Lê Thanh Thương-ORA4</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="./styles.css">
+    <meta charset="utf-8" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            min-height: 60%;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+
+        .btn_sec {
+            margin-top: 0px;
+        }
+
+        .option-view.active,
+        .option-view:hover {
+            background-color: rgb(61, 61, 244);
+            color: white;
+            border: 2px solid black;
+        }
+
+        .btn:focus {
+            outline: none;
+            /* Loại bỏ viền khi nút được focus */
+            /* Thêm các thuộc tính khác nếu cần */
+
+        }
+
+        .btn.option-view:focus {
+            outline: none;
+            /* Loại bỏ viền khi nút được focus */
+            /* Thêm các thuộc tính khác nếu cần */
+        }
+
+        #createMail_button {
+            background-color: #C2E7FF;
+            border: none;
+            color: black;
+        }
+
+        #createMail_button:hover {
+            box-shadow: 3px 3px 5px rgb(153, 153, 153);
+        }
+
+        #authorize_button:hover {
+            background-color: #31adff;
+            color: white;
+        }
+
+        #signout_button:hover {
+            background-color: #d71646;
+            color: white;
+        }
+
+        #signout_button {
+            background-color: #a6a4ae;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1 class="text-center">Gmail API demo</h1>
+        <div id="statusMessage"
+            style="display: none; color: blue; font-weight: bold; float: right; margin-right: 40px; background-color: rgb(184, 241, 222); font-size: 1.2em; padding-left: 10px; padding-right: 10px;padding-top: 4px;padding-bottom: 4px; border-radius: 5%;">
+        </div>
+        <h3 class="text-center" id="welcomeUser" style="margin-top: 10px; margin-bottom: 20px; display: none;">Welcome
+            <span id="userGmail" style="color: #31adff;"> </span>
+        </h3>
+    </div>
+    <div style="margin-top: 20px; margin-bottom: 10px;">
+        <button type="button" id="createMail_button" class="createMail_button" data-toggle="modal"
+            data-target="#compose-modal">
+            Soạn thư
+        </button>
+    </div>
+    <div class="clearfix">
+        <div class="btn_sec ">
+            <button id="authorize_button" class="btn " style="width:fit-content;">Sign In</button>
+            <button id="signout_button" class="btn  " onclick="handleSignoutClick()">Sign Out</button>
+        </div>
+    </div>
+
+    <div class="main">
+        <div style="margin-top: 1em; margin-bottom: 0.5em; width: 85%; margin-right: 100px; margin-left: auto;">
+            <button class="btn option-view active" onclick="handleOptionViewClick(this)">Hộp thư đến </button>
+            <button class="btn option-view" id="optionViewSent" onclick="handleOptionViewClick(this)">Thư đã
+                gửi</button>
+        </div>
+        <table class="table table-striped table-inbox">
+            <thead>
+                <tr>
+                    <th style="width: 25%;" id="source-mail" class="text-center">From</th>
+                    <th style="width: 40%;" class="text-center">Title</th>
+                    <th style="width: 20%;" class="text-center">Date/Time</th>
+                </tr>
+            </thead>
+            <tbody id="Inbox"></tbody>
+            <tbody id="Sent"></tbody>
+        </table>
+        <div class="modal fade" id="compose-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Soạn thư</h4>
+                    </div>
+                    <form onsubmit="sendEmail()">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="compose-to" placeholder="To" required />
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="compose-subject" placeholder="Title" />
+                            </div>
+
+                            <div class="form-group">
+                                <input type="file" name="file" id="file-input" width="20" height="20" multiple>
+                                <textarea class="form-control" id="compose-message" placeholder="Message" rows="10"
+                                    required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" id="closeModal"
+                                data-dismiss="modal">Đóng</button>
+                            <button type="submit" id="send-button" class="btn btn-primary">Gửi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="loader">
+            <div class="loader-inner">
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    </div>
+
+    <footer>
+        <table class="table table-striped table-inbox " style="margin-bottom: 10px; font-size: 16px; margin-top: 20px;" >
+            <tr style="background-color:#d1edff; color: rgb(139, 118, 1); ">
+                <td style="padding: 20px 50px 20px 50px;">
+                    <div>
+                        <span>Lưu ý:Chương trình sử dụng Gmail API free dẫn đến </span>
+                        <br> + Tốc độ gửi mail có thể chậm hơn bình thường vào một vài thời điểm
+                        <br> + Thông tin các mail do API trả về sẽ không theo dòng thời gian thực
+                    </div>
+                </td>
+                <td style="padding: 20px 40px 20px 40px;">
+                    <div>
+                        <span>Thông số cấu hình của chương trình: </span>
+                        <br> + Số lượng email hiện thị tối đa là <strong style="color: #c30535;">"50"</strong>
+                        <br> + Chỉ hiện thị các email mới nhất trong <strong style="color: #c30535;">"7"</strong> ngày gần nhất
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="background-color: black; color: white; padding-top: 30px; padding-bottom: 30px;"
+            class="text-center">
+            Mọi vấn đề xin liên hệ <em>lethanhthuongldp@gmail.com</em>. Xin cảm ơn!
+           <p style="margin-top: 10px; font-size: 13px; margin-bottom: 0px;"> @SGHB - All rights reserved. Developed by <span style="color: #03a678;">Lê Thanh Thương (lethanhthuong20215485)</span></p>
+        </div>
+
+    </footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="main.js"></script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+
+
+</body>
+
+
+</html>
